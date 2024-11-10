@@ -17,7 +17,29 @@
 // eslint-disable-next-line no-redeclare, no-unused-vars
 class Help {
     general() {
-        const response = LaunchBar.alert('Reade is a cute Readwise API client', `Interact with the Readwise API and receive responses in LaunchBar.
+        const response = LaunchBar.alert('Reade is a cute Readwise API client for LaunchBar', `Interact with the Readwise API and receive responses in LaunchBar.
+
+*Actions* are keywords that trigger specific functionality.
+
+⚡️  “add TEXT”: Create a new highlight in Readwise with the entered TEXT and return its URL (TEXT will come from the clipboard if not entered into LaunchBar).
+⚡️  “list [CATEGORY[ LOCATION]]”: List recent Reader items, optionally filtered by CATEGORY and/or LOCATION (which can be specified in either order).
+
+For example, to list all unread RSS items enter “list unread rss” into Reade.
+
+*Keyboard shortcuts* for Reader items:
+
+✨  ↵ (return)  Open the item in Reader.
+✨  ⌘↵ (command + return)  Open the source URL in your browser.
+✨  ⌃↵ (control + return)  Open the source URL in Quick Look (or ⌘Y).
+✨  ⇧↵ (shift + return)  Insert the source URL at the current cursor position.
+
+*Commands* manage settings:
+
+⚡️  “help”: Display a short user guide.
+⚡️  “config” list: Show current configuration settings.
+⚡️  “config” reset: Reset all configuration options to default.
+⚡️  “config” set OPTION VALUE: Set the configuration OPTION to VALUE, e.g., config set default_action alert.
+⚡️  “version”: Display Reade version and check if a new version is available.
 
 Reade was created by by Quinn Comendant.
 

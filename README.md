@@ -1,4 +1,4 @@
-# Reade
+# Reade is a cute Readwise API client for LaunchBar
 
 A [LaunchBar](https://www.obdev.at/products/launchbar/) action to interact with the [Readwise](https://readwise.io/) [API](https://readwise.io/api_deets). *Requires a Readwise API token.*
 
@@ -6,11 +6,19 @@ A [LaunchBar](https://www.obdev.at/products/launchbar/) action to interact with 
 
 Open Reade in LaunchBar, hit the spacebar, enter a command or message, then hit return.
 
-The input will be taken from the clipboard if no text is entered into LaunchBar.
-
 ### Actions
 
-Currently, the only and default action is to create a highlight and return its URL.
+- **`add TEXT`**: Create a new highlight in Readwise with the entered TEXT and return its URL (TEXT will come from the clipboard if not entered into LaunchBar).
+- **`list [CATEGORY[ LOCATION]]`**: List recent Reader items, optionally filtered by CATEGORY and/or LOCATION (which can be specified in either order).
+
+### Keyboard shortcuts
+
+**Reader items:**
+
+- **`↵`** *(return)* Open the item in Reader.
+- **`⌘ ↵`** *(command + return)* Open the source URL in your browser.
+- **`⌃ ↵`** *(control + return)* Open the source URL in Quick Look (also with **`⌘ Y`**).
+- **`⇧ ↵`** *(shift + return)* Insert the source URL at the current cursor position.
 
 ### Commands
 
