@@ -74,4 +74,4 @@ Do you find this free software useful? [Say thanks with a coffee!](https://ko-fi
 
 ----
 
-[![Reade icon](docs/Reade.jpg)](docs/Reade.jpg)
+[![Reade icon](docs/Reade-full.png)](docs/Reade-full.png)
