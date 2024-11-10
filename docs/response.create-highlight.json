@@ -1,0 +1,49 @@
+{
+    "data": [
+        {
+            "id": 45753340,
+            "category": "books",
+            "cover_image_url": "https://readwise-assets.s3.amazonaws.com/static/images/default-book-icon-8.18caceaece2b.png",
+            "modified_highlights": [
+
+            ],
+            "updated": "2024-11-10T06:11:39.840989Z",
+            "author": null,
+            "last_highlight_at": "2024-11-10T06:05:00.047671Z",
+            "tags": [
+
+            ],
+            "source": "api_book",
+            "title": "LaunchBar",
+            "source_url": null,
+            "document_note": "",
+            "num_highlights": 1,
+            "asin": null,
+            "highlights_url": "https://readwise.io/bookreview/12345"
+        }
+    ],
+    "response": {
+        "status": 200,
+        "headerFields": {
+            "Content-Type": "application/json",
+            "reporting-endpoints": "heroku-nel=https://nel.heroku.com/reports…",
+            "server-timing": "cfL4;desc=\"?proto=TCP&rtt=108138&sent=7&recv=11&lost=0&retrans=0&sent_bytes=3656&recv_bytes=985&delivery_rate=47796&cwnd=253&unsent_bytes=0&cid=f0bff870260d1aea&ts=177&x=0\"",
+            "version": "e9a30b2735a9f4234267276ab9499ce24dae6c5e",
+            "nel": "{\"report_to\":\"heroku-nel\",\"max_age\":3600,\"success_fraction\":0.005,\"failure_fraction\":0.05,\"response_headers\":[\"Via\"]}",
+            "Set-Cookie": "uniqueCookie=606467-1671076221; Path=/; SameSite=none; Secure",
+            "Via": "1.1 vegur",
+            "Server": "cloudflare",
+            "report-to": "{\"group\":\"heroku-nel\",\"max_age\":3600,\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports…\"}]}",
+            "Content-Encoding": "br",
+            "referrer-policy": "same-origin",
+            "cf-cache-status": "DYNAMIC",
+            "allow": "OPTIONS, GET, POST",
+            "Date": "Sun, 10 Nov 2024 06:11:39 GMT",
+            "x-content-type-options": "nosniff",
+            "cf-ray": "8e03e2eda894d6a4-IAD",
+            "x-frame-options": "DENY",
+            "Vary": "Accept, Origin, Cookie"
+        },
+        "localizedStatus": "no error"
+    }
+}

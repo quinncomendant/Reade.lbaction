@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIconFile</key>
+	<string>Reade.png</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.strangecode.LaunchBar.action.Reade</string>
+	<key>CFBundleName</key>
+	<string>Reade</string>
+	<key>LBDescription</key>
+	<dict>
+		<key>LBAuthor</key>
+		<string>Quinn Comendant</string>
+		<key>LBEmail</key>
+		<string>quinn@strangecode.com</string>
+		<key>LBSummary</key>
+		<string>Reade is a Readwise API client</string>
+		<key>LBTwitter</key>
+		<string>@com</string>
+		<key>LBWebsiteURL</key>
+		<string>https://www.strangecode.com/</string>
+	</dict>
+	<key>LBScripts</key>
+	<dict>
+		<key>LBDefaultScript</key>
+		<dict>
+			<key>LBAcceptedArgumentTypes</key>
+			<array>
+				<string>string</string>
+			</array>
+			<key>LBKeepWindowActive</key>
+			<true/>
+			<key>LBRequiresArgument</key>
+			<true/>
+			<key>LBResultType</key>
+			<string>unknown</string>
+			<key>LBReturnsResult</key>
+			<true/>
+			<key>LBScriptName</key>
+			<string>default.js</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
