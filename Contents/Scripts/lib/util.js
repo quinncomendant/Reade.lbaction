@@ -16,10 +16,35 @@
 
 // eslint-disable-next-line no-redeclare, no-unused-vars
 class Util {
+    iconForCategory(category) {
+        const icons = {
+            article: 'font-awesome:fa-newspaper',
+            email: 'font-awesome:fa-envelope',
+            rss: 'font-awesome:fa-rss',
+            highlight: 'font-awesome:fa-highlighter',
+            note: 'font-awesome:fa-sticky-note',
+            pdf: 'font-awesome:fa-file-pdf',
+            epub: 'font-awesome:fa-book',
+            tweet: 'font-awesome:fa-twitter',
+            video: 'font-awesome:fa-video',
+        };
+        return typeof icons[category] !== 'undefined' ? icons[category] : 'font-awesome:fa-browser'
+    }
+
+    formattedDate(timestamp) {
+        const parsedDate = new Date(isNaN(timestamp) ? timestamp : parseInt(timestamp, 10));
+        return isNaN(parsedDate.getTime()) ? '' : parsedDate.toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'});
+    }
+
+    encodeParams(params) {
+        return Object.keys(params)
+            .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+            .join('&');
+    }
+
     unprefix(str) {
-        const words = str.replace(/[^\S\r\n]+/g, ' ').trim().split(/\s+/);
-        words.shift();
-        return words.join(' ');
+        const [prefix, ...words] = str.replace(/[^\S\r\n]+/g, ' ').trim().split(/\s+/);
+        return [prefix, words.join(' ')];
     }
 
     truncate(str, max_length) {

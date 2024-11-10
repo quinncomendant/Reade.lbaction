@@ -46,6 +46,37 @@ const util = new Util();
 include('lib/readwise.js');
 const provider = new Readwise();
 
+// This function must remain global. It is the returned item's `action` function (return key).
+function defaultAction(item) {
+    if (LaunchBar.options.controlKey) {
+        // Quicklook the original URL.
+        if (!/^https?:/.test(item.source_url)) {
+            LaunchBar.alert('Reade is Sorry 🥺', `URL is weird: ${item.source_url}`);
+            return;
+        }
+        LaunchBar.openQuickLook(item.source_url);
+    } else if (LaunchBar.options.commandKey) {
+        // Open the original URL.
+        if (!/^https?:/.test(item.source_url)) {
+            LaunchBar.alert('Reade is Sorry 🥺', `URL is weird: ${item.source_url}`);
+            return;
+        }
+        LaunchBar.openURL(item.source_url);
+    } else if (LaunchBar.options.shiftKey) {
+        // Insert the original URL.
+        if (!/^https?:/.test(item.source_url)) {
+            LaunchBar.alert('Reade is Sorry 🥺', `URL is weird: ${item.source_url}`);
+            return;
+        }
+        LaunchBar.paste(item.source_url);
+    } else {
+        // Open the Reader URL.
+        LaunchBar.openURL(item.reader_url);
+    }
+    LaunchBar.hide();
+    return;
+}
+
 // This function is called by LaunchBar when the user passes text to the action.
 // eslint-disable-next-line no-redeclare, no-unused-vars
 function runWithString(argument) {
@@ -57,25 +88,19 @@ function runWithString(argument) {
         return parse.get('command');
     }
 
-    // No input entered, or the user declined to use content from the clipboard.
-    if (!parse.get('user_message')) {
-        return;
-    }
-
     // Get response from API.
     if (!config.get('token').length) {
         help.apiKey();
         return;
     }
-    let output;
-    let action = 'create'; // Only this, for now.
-    switch (action) {
-    case 'create':
+    switch (parse.get('action')) {
+    case 'create_highlight':
+        return util.actionOutput(provider.create_highlight());
+    case 'document_list':
+        return provider.document_list();
     default:
-        output = provider.create();
+        LaunchBar.alert('Reade is Sorry 🥺', `I don’t understand what you want me to do. Run with “help” for instructions.`);
     }
-
-    return util.actionOutput(output);
 }
 
 

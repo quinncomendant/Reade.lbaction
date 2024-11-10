@@ -8,12 +8,24 @@
 	<string>com.strangecode.LaunchBar.action.Reade</string>
 	<key>CFBundleName</key>
 	<string>Reade</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>LBArgument</key>
+	<string>text</string>
+	<key>LBDebugLogEnabled</key>
+	<true/>
 	<key>LBDescription</key>
 	<dict>
+		<key>LBArgument</key>
+		<string>text</string>
 		<key>LBAuthor</key>
 		<string>Quinn Comendant</string>
 		<key>LBEmail</key>
 		<string>quinn@strangecode.com</string>
+		<key>LBRequirements</key>
+		<string>Readwise account and API token</string>
+		<key>LBResult</key>
+		<string>URL</string>
 		<key>LBSummary</key>
 		<string>Reade is a Readwise API client</string>
 		<key>LBTwitter</key>
@@ -21,6 +33,12 @@
 		<key>LBWebsiteURL</key>
 		<string>https://www.strangecode.com/</string>
 	</dict>
+	<key>LBMinimumLaunchBarVersion</key>
+	<integer>6</integer>
+	<key>LBRequirements</key>
+	<string>Readwise account and API token</string>
+	<key>LBResult</key>
+	<string>URL</string>
 	<key>LBScripts</key>
 	<dict>
 		<key>LBDefaultScript</key>
@@ -41,5 +59,7 @@
 			<string>default.js</string>
 		</dict>
 	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright 2024 Quinn Comendant</string>
 </dict>
 </plist>

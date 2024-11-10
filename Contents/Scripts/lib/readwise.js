@@ -16,9 +16,14 @@
 
 // eslint-disable-next-line no-redeclare, no-unused-vars
 class Readwise {
-    // API details:
+    //
+    // Readwise API
     // https://readwise.io/api_deets
-    create() {
+    //
+    create_highlight() {
+        if (!parse.get('user_message')) {
+            return;
+        }
         const request_body = {
             highlights: [
                 {
@@ -52,6 +57,54 @@ class Readwise {
             LaunchBar.alert('LaunchBar error', result.error);
         } else {
             LaunchBar.debugLog(`Unknown https://readwise.io/api/v2/highlights/ error: ${JSON.stringify(result)}`);
+            LaunchBar.alert('An unknown error occurred');
+        }
+    }
+
+    //
+    // Reader API
+    // https://readwise.io/reader_api
+    //
+    document_list() {
+        const request_params = util.encodeParams(parse.get('params'));
+        LaunchBar.debugLog(`Request https://readwise.io/api/v3/list/?${request_params}`);
+        let result = HTTP.getJSON(`https://readwise.io/api/v3/list/?${request_params}`, {
+            headerFields: {'Authorization': `Token ${config.get('token')}`},
+            resultType: 'json',
+            timeout: config.get('timeout'),
+        });
+        if (typeof result.data !== 'undefined') {
+            LaunchBar.debugLog(`Response https://readwise.io/api/v3/list/: ${JSON.stringify(result.data)}`);
+            if (result.response.status !== 200) {
+                LaunchBar.alert('The request failed', result.data[0].text[0]);
+                return;
+            }
+            if (typeof result.data.results === 'undefined' || !result.data.results.length) {
+                LaunchBar.alert('The response was empty.');
+                return '';
+            }
+            return result.data.results
+            .filter(r => r.parent_id === null) // Exclude highlights and notes (they have `parent_id` set).
+            .map(r => ({
+                url: r.url,
+                title: r.title,
+                subtitle: r.summary,
+                badge: util.formattedDate(r.published_date),
+                label: `${Number(r.reading_progress * 100).toFixed(0)}%`,
+                quickLookURL: r.source_url,
+                action: 'defaultAction',
+                actionArgument: {
+                    reader_url: r.url,
+                    source_url: r.source_url,
+                },
+                icon: util.iconForCategory(r.category),
+            }));
+            return result.data[0].highlights_url.trim();
+        } else if (typeof result.error !== 'undefined') {
+            LaunchBar.debugLog(`Response https://readwise.io/api/v3/list/ error: ${JSON.stringify(result.error)}`);
+            LaunchBar.alert('LaunchBar error', result.error);
+        } else {
+            LaunchBar.debugLog(`Unknown https://readwise.io/api/v3/list/ error: ${JSON.stringify(result)}`);
             LaunchBar.alert('An unknown error occurred');
         }
     }

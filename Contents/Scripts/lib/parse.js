@@ -21,12 +21,19 @@ class Parse {
         // Raw input text, provided via LaunchBar input or copied from the clipboard.
         input_text: '',
 
-        // If the user sends a command, this will be returned to LaunchBar as output (mixed).
+        /** @type {boolean} If the user sends a command, this will be set to TRUE. */
         command: undefined,
 
         // The user message is the input text with modifiers removed (string).
         // This is what will be sent to the API as the most recent user message.
+        /** @type {string} */
         user_message: undefined,
+
+        /** @type {string} If an action modifier is provided, this will be set. */
+        action: '',
+
+        /** @type {Object} Parameters appropriate for submitting to the API for the define `action`. */
+        params: {},
     };
 
     process(input_text) {
@@ -34,6 +41,8 @@ class Parse {
         this.#results.command = this.commands(input_text);
         // If a command was given, don't bother parsing modifiers, which can result in confusion, e.g., `clear` alone will prompt the user if they want to submit their clipboard.
         this.#results.user_message = this.#results.command ? '' : this.modifiers(input_text);
+
+        LaunchBar.debugLog(`Parse results: ${JSON.stringify(this.#results)}`);
     }
 
     get(key) {
@@ -88,30 +97,62 @@ class Parse {
 
         // Modifiers customizes behavior.
         // eslint-disable-next-line no-control-regex
-        // let input_text_modifiers = this.#results.input_text.toLowerCase().trim().split(/\s+/);
-        // LaunchBar.debugLog(`Begin scanning modifiers in: ${JSON.stringify(input_text_modifiers)}`);
-        // input_text_modifiers.some(modifier => {
-        //     // The some() function exits on the first `return true`, i.e., the first non-modifier word.
-        //     switch (modifier) {
-        //     case 'cat': {
-        //         // Concatenate the input with text from the clipboard.
-        //         let user_message = util.getClipboard();
-        //         break;
-        //     }
-        //
-        //     default:
-        //         // - The end of the modifiers, stop scanning.
-        //         LaunchBar.debugLog(`Done scanning modifiers`);
-        //         return true;
-        //     }
-        //
-        //     // The modifier matched a keyword, continue with the next word.
-        //     LaunchBar.debugLog(`Scanned modifier: “${modifier}”`);
-        //     return false;
-        // });
+        let input_text_modifiers = this.#results.input_text.toLowerCase().trim().split(/\s+/);
+        LaunchBar.debugLog(`Begin scanning modifiers in: ${JSON.stringify(input_text_modifiers)}`);
+        input_text_modifiers.some(modifier => {
+            // The some() function exits on the first `return true`, i.e., the first non-modifier word.
+            switch (modifier) {
+            case 'list': {
+                // Get a list of recently-saved Reader items.
+                this.#results.action = 'document_list';
+                while (true) {
+                    const [prefix, rest] = util.unprefix(user_message);
+                    if (!prefix) break;
+                    switch (prefix) {
+                        case 'new':
+                        case 'later':
+                        case 'shortlist':
+                        case 'archive':
+                        case 'feed':
+                            this.#results.params.location = prefix;
+                            break;
+
+                        case 'article':
+                        case 'email':
+                        case 'rss':
+                        case 'highlight':
+                        case 'note':
+                        case 'pdf':
+                        case 'epub':
+                        case 'tweet':
+                        case 'video':
+                            this.#results.params.category = prefix;
+                            break;
+                    }
+                    user_message = rest;
+                }
+                break;
+            }
+
+            case 'add': {
+                // Add a highlight to Readwise.
+                this.#results.action = 'create_highlight';
+                user_message = util.unprefix(user_message)[1];
+            }
+
+            default:
+                // - The end of the modifiers, stop scanning.
+                LaunchBar.debugLog(`Done scanning modifiers`);
+                return true;
+            }
+
+            // The modifier matched a keyword, continue with the next word.
+            LaunchBar.debugLog(`Scanned modifier: “${modifier}”`);
+            return false;
+        });
 
         // If no text entered, try to use contents of clipboard.
-        if (!user_message.trim().length) {
+        if (!user_message.trim().length && ['create_highlight'].includes(this.#results.action)) {
             user_message = util.getClipboard();
         }
 
