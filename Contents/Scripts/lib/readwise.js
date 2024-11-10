@@ -19,13 +19,13 @@ class Readwise {
     // API details:
     // https://readwise.io/api_deets
     create() {
-
         const request_body = {
             highlights: [
                 {
                     text: parse.get('user_message'),
                     title: config.get('title'),
-                    image_url: 'https://raw.githubusercontent.com/quinncomendant/Reade.lbaction/refs/heads/main/docs/Reade-icon.png'
+                    image_url: 'https://raw.githubusercontent.com/quinncomendant/Reade.lbaction/refs/heads/main/docs/Reade-icon.png',
+                    source_type: 'Reade',
                 }
             ]
         };
