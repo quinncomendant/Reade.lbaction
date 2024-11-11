@@ -4,7 +4,7 @@ A [LaunchBar](https://www.obdev.at/products/launchbar/) action to interact with 
 
 ## Usage
 
-Open Reade in LaunchBar, hit the spacebar, enter a command or message, then hit return.
+Open Reade in LaunchBar, hit the spacebar, enter an action or command, then hit return.
 
 ### Actions
 

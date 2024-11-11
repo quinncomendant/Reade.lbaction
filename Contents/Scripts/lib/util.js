@@ -17,16 +17,18 @@
 // eslint-disable-next-line no-redeclare, no-unused-vars
 class Util {
     iconForCategory(category) {
+        // LaunchBar uses FontAwesome v4 icons: https://fontawesome.com/v4/icons/
         const icons = {
-            article: 'font-awesome:fa-newspaper',
+            article: 'font-awesome:fa-newspaper-o',
             email: 'font-awesome:fa-envelope',
-            rss: 'font-awesome:fa-rss',
-            highlight: 'font-awesome:fa-highlighter',
-            note: 'font-awesome:fa-sticky-note',
-            pdf: 'font-awesome:fa-file-pdf',
             epub: 'font-awesome:fa-book',
+            pdf: 'font-awesome:fa-file-pdf',
+            rss: 'font-awesome:fa-rss',
             tweet: 'font-awesome:fa-twitter',
             video: 'font-awesome:fa-video',
+            // These two are currently excluded by the filter in readwise.document_list()
+            highlight: 'font-awesome:fa-paint-brush',
+            note: 'font-awesome:fa-bookmark',
         };
         return typeof icons[category] !== 'undefined' ? icons[category] : 'font-awesome:fa-browser'
     }
