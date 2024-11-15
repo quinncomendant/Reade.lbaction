@@ -18,19 +18,11 @@
 class Parse {
     // The private #results object will be populated when process() is run.
     #results = {
-        // Raw input text, provided via LaunchBar input or copied from the clipboard.
-        input_text: '',
-
         /** @type {boolean} If the user sends a command, this will be set to TRUE. */
         command: undefined,
 
-        // The user message is the input text with modifiers removed (string).
-        // This is what will be sent to the API as the most recent user message.
-        /** @type {string} */
-        user_message: undefined,
-
         /** @type {string} If an action modifier is provided, this will be set. */
-        action: '',
+        action: undefined,
 
         /** @type {Object} Parameters appropriate for submitting to the API for the define `action`. */
         params: {},
@@ -39,10 +31,17 @@ class Parse {
     process(input_text) {
         // this.commands() returns true if a command is found, false if none found.
         this.#results.command = this.commands(input_text);
-        // If a command was given, don't bother parsing modifiers, which can result in confusion, e.g., `clear` alone will prompt the user if they want to submit their clipboard.
-        this.#results.user_message = this.#results.command ? '' : this.modifiers(input_text);
+
+        if (this.#results.command) {
+            // If a command was given, don't parse actions.
+            return this.#results.command;
+        }
+
+        // this.actions() returns true on success.
+        const actions_result = this.actions(input_text);
 
         LaunchBar.debugLog(`Parse results: ${JSON.stringify(this.#results)}`);
+        return actions_result;
     }
 
     get(key) {
@@ -53,7 +52,7 @@ class Parse {
     commands(input_text) {
         // Intercept command keyword.
         // Collapse `two word` commands to `twoword`.
-        let input_text_command = input_text.replace(/^(config) *(delete|export|list|reset|set |get ).*$/, '$1$2').trim().toLowerCase();
+        let input_text_command = input_text.replace(/^(config) *(delete|export|list|reset|set |get ).*$/, '$1$2').toLowerCase().trim();
         LaunchBar.debugLog(`Running command “${input_text_command}”`);
         switch (input_text_command) {
         case 'config':
@@ -83,6 +82,10 @@ class Parse {
             help.general();
             return true;
 
+        case 'version':
+            util.versionCheck();
+            return true;
+
         default:
             // No command found, return false so we can continue running Reade.
             LaunchBar.debugLog(`Command not found: “${input_text_command}”`);
@@ -90,77 +93,129 @@ class Parse {
         }
     }
 
-    modifiers(input_text) {
-        // To start, the raw input_text and user_message are the same; modifiers will be removed from the user_message as they are parsed.
-        this.#results.input_text = input_text.replace(/[^\S\r\n]+/g, ' ').trim();
-        let user_message = this.#results.input_text;
+    actions(input_text) {
+        const input_text_action = input_text.toLowerCase().split(/\s+/)[0];
+        LaunchBar.debugLog(`Parsing action “${input_text_action}”`);
+        switch (input_text_action) {
+        case 'add': {
+            // Add a highlight to Readwise.
+            // E.g., `add This is a highlight`,
+            this.#results.action = 'highlight_create';
+            this.#results.params.text = util.unprefix(input_text)[1];
 
-        // Modifiers customizes behavior.
-        // eslint-disable-next-line no-control-regex
-        let input_text_modifiers = this.#results.input_text.toLowerCase().trim().split(/\s+/);
-        LaunchBar.debugLog(`Begin scanning modifiers in: ${JSON.stringify(input_text_modifiers)}`);
-        input_text_modifiers.some(modifier => {
-            // The some() function exits on the first `return true`, i.e., the first non-modifier word.
-            switch (modifier) {
-            case 'list': {
-                // Get a list of recently-saved Reader items.
-                this.#results.action = 'document_list';
-                while (true) {
-                    const [prefix, rest] = util.unprefix(user_message);
-                    if (!prefix) break;
-                    switch (prefix) {
-                        case 'new':
-                        case 'later':
-                        case 'shortlist':
-                        case 'archive':
-                        case 'feed':
-                            this.#results.params.location = prefix;
-                            break;
-
-                        case 'article':
-                        case 'email':
-                        case 'rss':
-                        case 'highlight':
-                        case 'note':
-                        case 'pdf':
-                        case 'epub':
-                        case 'tweet':
-                        case 'video':
-                            this.#results.params.category = prefix;
-                            break;
-                    }
-                    user_message = rest;
+            // If no text entered, try to use contents of clipboard.
+            if (!this.#results.params.text.trim().length) {
+                this.#results.params.text = util.getClipboard();
+                if (!this.#results.params.text.trim().length) {
+                    LaunchBar.alert(`Failed to create highlight`, `The “add” action must be followed by the text of the highlight, e.g., “add This text”.`);
+                    return false;
                 }
-                break;
             }
 
-            case 'add': {
-                // Add a highlight to Readwise.
-                this.#results.action = 'create_highlight';
-                user_message = util.unprefix(user_message)[1];
+            if (this.#results.params.text.length > 8191) {
+                LaunchBar.alert('Failed to create highlight', `That highlight text is too long (${this.#results.params.text.length}); max length 8191.`);
+                return false;
+            }
+            return true;
+        }
+
+        case 'save': {
+            // Save a URL to Reader.
+            // E.g., `save https://example.com/post/123 tag1,tag2,tag3`
+            this.#results.action = 'document_create';
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                const [prefix, rest] = util.unprefix(input_text);
+                if (!prefix) break;
+                if (/^https?:/.test(prefix)) {
+                    this.#results.params.url = prefix;
+                    if (rest.length) {
+                        this.#results.params.tags = rest.split(',').map(tag => tag.trim());
+                    }
+                    break;
+                }
+                input_text = rest;
             }
 
-            default:
-                // - The end of the modifiers, stop scanning.
-                LaunchBar.debugLog(`Done scanning modifiers`);
-                return true;
+            // If no text entered, try to use contents of clipboard.
+            if (typeof this.#results.params.url === 'undefined' || !this.#results.params.url.length) {
+                let clipboard = util.getClipboard();
+                if (clipboard.length) {
+                    if (/^https?:\S+$/.test(clipboard)) {
+                        this.#results.params.url = clipboard;
+                        return true;
+                    } else {
+                        if (/^\s*(#{1,6}\s|[*-]\s|\d+\.\s|```)|\[.*?\]\(.*?\)|\*\*.*?\*\*|_.*?_|`.*?`/.test(clipboard)
+                        && !/<\w+>/.test(clipboard)) {
+                            // Convert Markdown to HTML using https://github.com/PianothShaveck/drawdown
+                            include('lib/drawdown.js');
+                            // eslint-disable-next-line no-redeclare, no-unused-vars
+                            clipboard = `<div>${markdown(clipboard)}</div>`;
+                        }
+                        this.#results.params.url = `https://example.com/#${util.fnv1aHash(clipboard)}`;
+                        this.#results.params.html = clipboard;
+                        this.#results.params.should_clean_html = true;
+                    }
+                }
             }
 
-            // The modifier matched a keyword, continue with the next word.
-            LaunchBar.debugLog(`Scanned modifier: “${modifier}”`);
+            if (!this.#results.params.url) {
+                LaunchBar.alert(`Failed to save`, `The “save” action requires a URL, e.g., “save http://example.com tag1,tag2”. Or, run “save” alone to get the URL or article content from the clipboard.`);
+                return false;
+            }
+            return true;
+        }
+
+        case 'list': {
+            // Get a list of recently-saved Reader items.
+            // E.g., `list unread rss`
+            this.#results.action = 'document_list';
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                let [prefix, rest] = util.unprefix(input_text);
+                if (!prefix) break;
+                switch (prefix) {
+                case 'new':
+                case 'later':
+                case 'shortlist':
+                case 'archive':
+                case 'feed':
+                case 'seen': // Not mentioned in the docs, but seems like it should exist?
+                case 'unseen': // Not mentioned in the docs, but seems like it should exist?
+                    this.#results.params.location = prefix;
+                    break;
+
+                case 'articles':
+                case 'emails':
+                case 'epubs':
+                case 'highlights':
+                case 'notes':
+                case 'pdfs':
+                case 'tweets':
+                case 'videos':
+                    // Deplurize plural categories.
+                    prefix = prefix.replace(/s$/, '');
+                // eslint-disable-next-line no-fallthrough
+                case 'article':
+                case 'email':
+                case 'epub':
+                case 'highlight':
+                case 'note':
+                case 'pdf':
+                case 'rss':
+                case 'tweet':
+                case 'video':
+                    this.#results.params.category = prefix;
+                    break;
+                }
+                input_text = rest;
+            }
+            return true;
+        }
+
+        default:
+            LaunchBar.debugLog(`No matching action`);
             return false;
-        });
-
-        // If no text entered, try to use contents of clipboard.
-        if (!user_message.trim().length && ['create_highlight'].includes(this.#results.action)) {
-            user_message = util.getClipboard();
         }
-
-        if (user_message.length > 8191) {
-            LaunchBar.alert('Failed to create highlight', `That highlight text is too long (${user_message.length}); max length 8191.`);
-            return;
-        }
-
-        return user_message;
     }
 }

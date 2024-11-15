@@ -4,6 +4,7 @@ module.exports = {
         'es2021': true
     },
     'extends': 'eslint:recommended',
+    'ignorePatterns': ['drawdown.js'],
     'overrides': [
     ],
     'parserOptions': {
@@ -26,10 +27,12 @@ module.exports = {
         'OpenAI': 'readonly',
         'Parse': 'readonly',
         'Persona': 'readonly',
+        'Readwise': 'readonly',
         'Util': 'readonly',
         'config': 'readonly',
         'help': 'readonly',
         'include': 'readonly',
+        'markdown': 'readonly',
         'module': 'readonly',
         'parse': 'readonly',
         'persona': 'readonly',

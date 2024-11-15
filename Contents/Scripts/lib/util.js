@@ -22,7 +22,7 @@ class Util {
             article: 'font-awesome:fa-newspaper-o',
             email: 'font-awesome:fa-envelope',
             epub: 'font-awesome:fa-book',
-            pdf: 'font-awesome:fa-file-pdf',
+            pdf: 'font-awesome:fa-file-pdf-o',
             rss: 'font-awesome:fa-rss',
             tweet: 'font-awesome:fa-twitter',
             video: 'font-awesome:fa-video',
@@ -30,7 +30,7 @@ class Util {
             highlight: 'font-awesome:fa-paint-brush',
             note: 'font-awesome:fa-bookmark',
         };
-        return typeof icons[category] !== 'undefined' ? icons[category] : 'font-awesome:fa-browser'
+        return typeof icons[category] !== 'undefined' ? icons[category] : 'font-awesome:fa-browser';
     }
 
     formattedDate(timestamp) {
@@ -161,6 +161,33 @@ class Util {
         case 1:
             return '';
         }
+    }
+
+    versionCheck() {
+        var result = HTTP.getJSON('https://api.github.com/repos/quinncomendant/Reade.lbaction/releases/latest');
+        if (typeof result.data !== 'undefined') {
+            if (Action.version === result.data.tag_name) {
+                LaunchBar.alert(`Reade is up-to-date`, `You have version ${Action.version} which is the latest version available.`);
+                return;
+            } else if (Action.version > result.data.tag_name) {
+                const up_to_date_response = LaunchBar.alert(`Reade is up-to-date`, `You have version ${Action.version} which is newer than the latest version available.`, 'Close', 'Download old version');
+                switch (up_to_date_response) {
+                case 1:
+                    LaunchBar.openURL('https://github.com/quinncomendant/Reade.lbaction/releases');
+                    break;
+                }
+                return;
+            } else if (result.data.tag_name > Action.version) {
+                const new_version_response = LaunchBar.alert(`Reade has a new version available`, `${result.data.tag_name} is the latest version available. You have version ${Action.version}.`, 'Close', 'Download new version');
+                switch (new_version_response) {
+                case 1:
+                    LaunchBar.openURL('https://github.com/quinncomendant/Reade.lbaction/releases');
+                    break;
+                }
+                return;
+            }
+        }
+        LaunchBar.alert(`Reade version ${Action.version}`, `Failed to check if a new version is available. ${typeof result.error !== 'undefined' ? result.error : ''}`);
     }
 
     actionOutput(output) {

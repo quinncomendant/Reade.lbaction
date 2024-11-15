@@ -22,7 +22,11 @@ class Help {
 *Actions* are keywords that trigger specific functionality.
 
 ⚡️  “add TEXT”: Create a new highlight in Readwise with the entered TEXT and return its URL (TEXT will come from the clipboard if not entered into LaunchBar).
+⚡️  “save URL [TAGS]”: Save a URL to Reader. Any words after the URL (comma-delimited) will be added as tags, e.g., “tag one, tag two”.
 ⚡️  “list [CATEGORY[ LOCATION]]”: List recent Reader items, optionally filtered by CATEGORY and/or LOCATION (which can be specified in either order).
+
+→ CATEGORY can be one of: article, email, epub, highlight, note, pdf, rss, tweet, video.
+→ LOCATION can be one of: new, later, shortlist, archive, feed.
 
 For example, to list all unread RSS items enter “list unread rss” into Reade.
 

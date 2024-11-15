@@ -44,28 +44,30 @@ include('lib/util.js');
 const util = new Util();
 
 include('lib/readwise.js');
+// eslint-disable-next-line no-redeclare, no-unused-vars
 const provider = new Readwise();
 
 // This function must remain global. It is the returned item's `action` function (return key).
+// eslint-disable-next-line no-unused-vars
 function defaultAction(item) {
-    if (LaunchBar.options.controlKey) {
+    if (LaunchBar.options.controlKey && item.source_url) {
         // Quicklook the original URL.
         if (!/^https?:/.test(item.source_url)) {
-            LaunchBar.alert('Reade is Sorry 🥺', `URL is weird: ${item.source_url}`);
+            LaunchBar.alert('Reade is Sorry 💔', `URL is weird: ${item.source_url}`);
             return;
         }
         LaunchBar.openQuickLook(item.source_url);
-    } else if (LaunchBar.options.commandKey) {
+    } else if (LaunchBar.options.commandKey && item.source_url) {
         // Open the original URL.
         if (!/^https?:/.test(item.source_url)) {
-            LaunchBar.alert('Reade is Sorry 🥺', `URL is weird: ${item.source_url}`);
+            LaunchBar.alert('Reade is Sorry 💔', `URL is weird: ${item.source_url}`);
             return;
         }
         LaunchBar.openURL(item.source_url);
-    } else if (LaunchBar.options.shiftKey) {
+    } else if (LaunchBar.options.shiftKey && item.source_url) {
         // Insert the original URL.
         if (!/^https?:/.test(item.source_url)) {
-            LaunchBar.alert('Reade is Sorry 🥺', `URL is weird: ${item.source_url}`);
+            LaunchBar.alert('Reade is Sorry 💔', `URL is weird: ${item.source_url}`);
             return;
         }
         LaunchBar.paste(item.source_url);
@@ -80,22 +82,28 @@ function defaultAction(item) {
 // This function is called by LaunchBar when the user passes text to the action.
 // eslint-disable-next-line no-redeclare, no-unused-vars
 function runWithString(argument) {
-    // Parse the user input.
-    parse.process(argument.trim().replace(/[^\S\r\n]+/g, ' '));
+    // Parse the user input, demanding success.
+    if (!parse.process(argument.replace(/[^\S\r\n]+/g, ' ').trim())) {
+        return;
+    }
 
     // If a command was entered, run it.
     if (parse.get('command')) {
         return parse.get('command');
     }
 
-    // Get response from API.
+    // Ensure the token is set.
     if (!config.get('token').length) {
         help.apiKey();
         return;
     }
+
+    // Run the requested action.
     switch (parse.get('action')) {
-    case 'create_highlight':
-        return util.actionOutput(provider.create_highlight());
+    case 'highlight_create':
+        return util.actionOutput(provider.highlight_create());
+    case 'document_create':
+        return util.actionOutput(provider.document_create());
     case 'document_list':
         return provider.document_list();
     default:
