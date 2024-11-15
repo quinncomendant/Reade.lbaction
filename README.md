@@ -10,30 +10,44 @@ Open Reade in LaunchBar, hit the spacebar, enter an action or command, then hit 
 
 ### Actions
 
+#### Add highlight to Readwise
+
 - **`add TEXT`**: Create a new highlight in Readwise with the *entered `TEXT`* and return its URL.
 - **`add`**: Create a new highlight in Readwise with *text from the clipboard* and return its URL.
+
+Highlights created with the `add` action will be saved in a Readwise book titled “Highlights saved by Reade.” This is configurable with the [`title` config option](#options).
+
+#### Save content to Reader
+
 - **`save URL [TAGS]`**: Save a *URL* to Reader. Any words after the `URL` (comma-delimited) will be added as tags, e.g., `tag one, tag two`.
 - **`save`**: Save to Reader using a *URL or text from the clipboard*. The clipboard can contain raw HTML, text, or Markdown. If the clipboard contains Markdown, it will be converted to HTML. This mode doesn’t support adding tags.
+
+#### List Reader items
+
 - **`list [CATEGORY] [LOCATION]`**: List recent Reader items, optionally filtered by `CATEGORY` and/or `LOCATION` (which can be specified in either order).
     - `CATEGORY` can be one of: `article`, `email`, `epub`, `highlight`, `note`, `pdf`, `rss`, `tweet`, `video`.
     - `LOCATION` can be one of: `new`, `later`, `shortlist`, `archive`, `feed`.
 
-#### Keyboard shortcuts
+For example, to list all archived RSS items enter `list rss archive` into Reade.
 
-When using the `list` action, these shortcuts modify the behavior of the selected item:
+The `list` action only returns 100 items (that’s enough, right?). Items are sorted by “recently saved” (but is different from all sort options in the Reader app). It doesn't appear possible to change the order of items returned by the API.
+
+After the list displays, you can type to filter the list on title matches, like any LaunchBar list.
+    
+**Output includes:**
+
+- Icon indicating the category of the content, e.g., ✉️ for email items.
+- Title.
+- Subtitle.
+- Reading progress %.
+- Publication date.
+
+**Keyboard shortcuts for selected item:**
 
 - **`↵`** *(return)* Open the item in Reader.
 - **`⌘ ↵`** *(command + return)* Open the source URL in your browser.
 - **`⌃ ↵`** *(control + return)* Open the source URL in Quick Look (also with **`⌘ Y`**).
 - **`⇧ ↵`** *(shift + return)* Insert the source URL at the cursor’s current position in any app.
-
-#### Limitations
-
-- Highlights created with the `add` action will be saved in a Readwise book titled “Highlights saved by Reade.” This is configurable with the [`title` config option](#options).
-- Saving text or HTML content from the clipboard with the `save` action doesn’t support adding tags; only saving by URL with the `save URL [TAGS]` format can include tags.
-- The `list` action only returns 100 items (that’s enough, right?)
-- The `list` action returns items in a predefined order that approximates “recently saved” (but is different from all sort options in the Reader app). It doesn't appear possible to change the order of items returned by the API.
-- After saving an article or creating a highlight, the readwise.io URL returned will open in the web app; there is no way to open them in the desktop apps.
 
 ### Commands
 

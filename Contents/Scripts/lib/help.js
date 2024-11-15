@@ -17,7 +17,7 @@
 // eslint-disable-next-line no-redeclare, no-unused-vars
 class Help {
     general() {
-        const response = LaunchBar.alert('Reade is a cute Readwise API client for LaunchBar', `Interact with the Readwise API and receive responses in LaunchBar.
+        const response = LaunchBar.alert('Reade is a cute Readwise API client for LaunchBar', `Interact with the Readwise API and receive responses in LaunchBar. Reade can add highlights to Readwise, save URLs and text to Reader, and list Reader items.
 
 *Actions* are keywords that trigger specific functionality.
 
@@ -28,7 +28,7 @@ class Help {
 → CATEGORY can be one of: article, email, epub, highlight, note, pdf, rss, tweet, video.
 → LOCATION can be one of: new, later, shortlist, archive, feed.
 
-For example, to list all unread RSS items enter “list unread rss” into Reade.
+For example, to list all archived RSS items enter “list rss archive” into Reade.
 
 *Keyboard shortcuts* for Reader items:
 
