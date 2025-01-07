@@ -1,3 +1,4 @@
 docs/*.afphoto
 docs/*.mp4
+docs/response*.json
 node_modules/

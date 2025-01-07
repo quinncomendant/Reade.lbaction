@@ -3,6 +3,7 @@
     "eslint": "^8.38.0"
   },
   "scripts": {
-    "lint": "eslint -f ./.eslint-textmate-formatter.js ."
+    "lint": "eslint -f ./.eslint-textmate-formatter.js .",
+    "build": "~/bin/launchbar-action build Reade"
   }
 }

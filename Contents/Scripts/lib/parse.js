@@ -170,6 +170,7 @@ class Parse {
             // Get a list of recently-saved Reader items.
             // E.g., `list unread rss`
             this.#results.action = 'document_list';
+            this.#results.params.withHtmlContent = false;
             // eslint-disable-next-line no-constant-condition
             while (true) {
                 let [prefix, rest] = util.unprefix(input_text);

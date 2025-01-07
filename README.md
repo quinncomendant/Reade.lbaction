@@ -90,7 +90,7 @@ Now you’re ready to use Reade!
 
 1. Run the `version` command to check for new versions.
 2. Download the new `Reade.lbaction.zip` file from [releases](https://github.com/quinncomendant/Reade.lbaction/releases), unzip it, and double-click it to install.
-3. Read the change log on the release page, which may have special instructions such as a requirement to run `config reset` after updating.
+3. Read the changelog on the release page, which may have special instructions such as a requirement to run `config reset` after updating.
 
 ## Configuration
 
