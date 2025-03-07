@@ -145,7 +145,7 @@ class Readwise {
                     quickLookURL: r.source_url,
                     action: 'defaultAction',
                     actionArgument: {
-                        reader_url: r.url,
+                        reader_url: util.schemeSupported('wiseread') ? `wiseread://read/${r.id}` : r.url,
                         source_url: r.source_url,
                     },
                     icon: util.iconForCategory(r.category),

@@ -16,6 +16,8 @@
 
 // eslint-disable-next-line no-redeclare, no-unused-vars
 class Util {
+    static _cachedSchemes = null;
+
     iconForCategory(category) {
         // LaunchBar uses FontAwesome v4 icons: https://fontawesome.com/v4/icons/
         const icons = {
@@ -161,6 +163,17 @@ class Util {
         case 1:
             return '';
         }
+    }
+
+    schemeSupported(scheme = 'wiseread') {
+        if (Util._cachedSchemes === null) {
+            Util._cachedSchemes = LaunchBar.execute(
+                '/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister',
+                '-dump',
+                'URLSchemeBinding'
+            );
+        }
+        return Util._cachedSchemes ? new RegExp(`^${scheme}:`, 'im').test(Util._cachedSchemes) : false;
     }
 
     versionCheck() {
