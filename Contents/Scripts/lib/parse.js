@@ -152,7 +152,7 @@ class Parse {
                             // eslint-disable-next-line no-redeclare, no-unused-vars
                             clipboard = `<div>${markdown(clipboard)}</div>`;
                         }
-                        this.#results.params.url = `https://example.com/#${util.fnv1aHash(clipboard)}`;
+                        this.#results.params.url = `https://example.com/${util.fnv1aHash(clipboard)}`;
                         this.#results.params.html = clipboard;
                         this.#results.params.should_clean_html = true;
                     }
