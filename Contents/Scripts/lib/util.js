@@ -204,7 +204,7 @@ class Util {
     }
 
     actionOutput(output) {
-        if (/^https:/.test(output)) {
+        if (/^(https?|wiseread):/.test(output)) {
             // URL
             return {
                 url: output,

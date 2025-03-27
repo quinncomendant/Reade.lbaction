@@ -90,7 +90,7 @@ class Readwise {
                 LaunchBar.alert('Reade is Sorry 💔', 'The response was empty.');
                 return '';
             }
-            return result.data.url;
+            return util.schemeSupported('wiseread') ? `wiseread://read/${result.data.id}` : result.data.url;
         } else if (typeof result.error !== 'undefined') {
             LaunchBar.debugLog(`Response https://readwise.io/api/v3/save/ error: ${JSON.stringify(result.error)}`);
             LaunchBar.alert('LaunchBar error', result.error);
@@ -128,8 +128,8 @@ class Readwise {
                     badge: r.created_at ? util.formattedDate(r.created_at) : '',
                     action: 'defaultAction',
                     actionArgument: {
-                        reader_url: r.url,
-                        source_url: null,
+                        reader_url: util.schemeSupported('wiseread') ? `wiseread://read/${r.id}` : r.url,
+                        source_url: r.source_url,
                     },
                     icon: util.iconForCategory(r.category),
                 }));
