@@ -145,9 +145,8 @@ class Parse {
                         this.#results.params.url = clipboard;
                         return true;
                     } else {
-                        if (/^\s*(#{1,6}\s|[*-]\s|\d+\.\s|```)|\[.*?\]\(.*?\)|\*\*.*?\*\*|_.*?_|`.*?`/.test(clipboard)
-                        && !/<\w+>/.test(clipboard)) {
-                            // Convert Markdown to HTML using https://github.com/PianothShaveck/drawdown
+                        if (!/<\w+>/.test(clipboard)) {
+                            // If no HTML tags, convert to HTML by processing as Markdown using https://github.com/PianothShaveck/drawdown
                             include('lib/drawdown.js');
                             // eslint-disable-next-line no-redeclare, no-unused-vars
                             clipboard = `<div>${markdown(clipboard)}</div>`;

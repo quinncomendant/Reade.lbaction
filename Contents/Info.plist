@@ -9,7 +9,7 @@
 	<key>CFBundleName</key>
 	<string>Reade</string>
 	<key>CFBundleVersion</key>
-	<string>v1.0.4</string>
+	<string>v1.0.5</string>
 	<key>LBArgument</key>
 	<string>text</string>
 	<key>LBDescription</key>
@@ -26,10 +26,8 @@
 		<string>URL</string>
 		<key>LBSummary</key>
 		<string>Reade is a Readwise API client</string>
-		<key>LBTwitter</key>
-		<string>@com</string>
 		<key>LBWebsiteURL</key>
-		<string>https://www.strangecode.com/</string>
+		<string>https://github.com/quinncomendant/Reade.lbaction</string>
 	</dict>
 	<key>LBMinimumLaunchBarVersion</key>
 	<integer>6</integer>
