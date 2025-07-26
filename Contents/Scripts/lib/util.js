@@ -28,11 +28,18 @@ class Util {
             rss: 'font-awesome:fa-rss',
             tweet: 'font-awesome:fa-twitter',
             video: 'font-awesome:fa-video',
-            // These two are currently excluded by the filter in readwise.document_list()
+            // These two are currently excluded by the filter in readwise.documentList()
             highlight: 'font-awesome:fa-paint-brush',
             note: 'font-awesome:fa-bookmark',
         };
         return typeof icons[category] !== 'undefined' ? icons[category] : 'font-awesome:fa-browser';
+    }
+
+    isAccessibleURL(url) {
+        // Some documents will contain inaccessible URLs such as `mailto:…` (for documents received by email), `http://saved.by.reade/` (documents saved by Reade), or `http://example.com`.
+        return typeof url === 'string'
+            && /^https?:/.test(url)
+            && !/^https?:\/\/([\w-]+\.)*(example(\.com)?|saved\.by\.reade|invalid|test|localhost)\//.test(url);
     }
 
     formattedDate(timestamp) {
@@ -42,7 +49,13 @@ class Util {
 
     encodeParams(params) {
         return Object.keys(params)
-            .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+            .flatMap(key => {
+                const val = params[key];
+                if (Array.isArray(val)) {
+                    return val.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`);
+                }
+                return `${encodeURIComponent(key)}=${encodeURIComponent(val)}`;
+            })
             .join('&');
     }
 
@@ -87,16 +100,17 @@ class Util {
     }
 
     safeFilename(str) {
+        if (!str) str = Date.now().toString();
         const hash = this.fnv1aHash(str).toString();
         const slug = this.slug(str).substring(0, 240 - hash.length);
         return `${slug}-${hash}`;
     }
 
-    filenameFromInputString(str, dir_path) {
+    filenameFromInputString(str, ext, dir_path) {
         if (typeof dir_path === 'undefined') {
             dir_path = Action.cachePath;
         }
-        return `${dir_path}/${this.safeFilename(str)}.${config.get('filename_extension')}`;
+        return `${dir_path}/${this.safeFilename(str)}.${ext}`;
     }
 
     filenameExtension(filename) {

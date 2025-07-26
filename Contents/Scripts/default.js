@@ -51,26 +51,31 @@ const provider = new Readwise();
 // eslint-disable-next-line no-unused-vars
 function defaultAction(item) {
     if (LaunchBar.options.controlKey && item.source_url) {
-        // Quicklook the original URL.
-        if (!/^https?:/.test(item.source_url)) {
-            LaunchBar.alert('Reade is Sorry 💔', `URL is weird: ${item.source_url}`);
-            return;
+        // ⌃-enter: Quick Look the URL.
+        if (!util.isAccessibleURL(item.source_url)) {
+            // Fall back to the distilled HTML.
+            provider.documentQuickLookHtmlFile(item.document_id);
+        } else {
+            LaunchBar.openQuickLook(item.source_url);
         }
-        LaunchBar.openQuickLook(item.source_url);
-    } else if (LaunchBar.options.commandKey && item.source_url) {
-        // Open the original URL.
-        if (!/^https?:/.test(item.source_url)) {
-            LaunchBar.alert('Reade is Sorry 💔', `URL is weird: ${item.source_url}`);
-            return;
+    } else if (LaunchBar.options.commandKey) {
+        // ⌘-enter: Open the original source URL.
+        if (!util.isAccessibleURL(item.source_url)) {
+            // Fall back to the distilled HTML.
+            provider.documentOpenHtmlFile(item.document_id);
+        } else {
+            LaunchBar.openURL(item.source_url);
         }
-        LaunchBar.openURL(item.source_url);
     } else if (LaunchBar.options.shiftKey && item.source_url) {
-        // Insert the original URL.
-        if (!/^https?:/.test(item.source_url)) {
-            LaunchBar.alert('Reade is Sorry 💔', `URL is weird: ${item.source_url}`);
+        // ⇧-enter: Insert the original URL.
+        if (!util.isAccessibleURL(item.source_url)) {
+            LaunchBar.alert('Reade is Sorry 💔', `Source URL is inaccessible: ${item.source_url}`);
             return;
         }
         LaunchBar.paste(item.source_url);
+    } else if (LaunchBar.options.alternateKey && item.source_url) {
+        // ⌥-enter: Open the document as a HTML file.
+        provider.documentOpenHtmlFile(item.document_id);
     } else {
         // Open the Reader URL.
         LaunchBar.openURL(item.reader_url);
@@ -98,16 +103,15 @@ function runWithString(argument) {
         return;
     }
 
+
     // Run the requested action.
     switch (parse.get('action')) {
-    case 'highlight_create':
-        return util.actionOutput(provider.highlight_create());
-    case 'document_create':
-        return util.actionOutput(provider.document_create());
-    case 'document_list':
-        return provider.document_list();
-    default:
-        LaunchBar.alert('Reade is Sorry 🥺', `I don’t understand what you want me to do. Run with “help” for instructions.`);
+    case 'highlightCreate':
+        return util.actionOutput(provider.highlightCreate());
+    case 'documentCreate':
+        return util.actionOutput(provider.documentCreate());
+    case 'documentList':
+        return provider.documentList();
     }
 }
 

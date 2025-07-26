@@ -21,28 +21,32 @@ class Help {
 
 *Actions* are keywords that trigger specific functionality.
 
-⚡️  “add TEXT”: Create a new highlight in Readwise with the entered TEXT and return its URL (TEXT will come from the clipboard if not entered into LaunchBar).
+⚡️  “add TEXT”: Create a new highlight in Readwise with the entered TEXT and return its URL.
+⚡️  “add”: Create a new highlight in Readwise with text from the clipboard and return its URL
 ⚡️  “save URL [TAGS]”: Save a URL to Reader. Any words after the URL (comma-delimited) will be added as tags, e.g., “tag one, tag two”.
-⚡️  “list [CATEGORY[ LOCATION]]”: List recent Reader items, optionally filtered by CATEGORY and/or LOCATION (which can be specified in either order).
+⚡️  “save”: Save to Reader using a URL or text from the clipboard. The clipboard can contain raw HTML, text, or Markdown. If the clipboard contains Markdown, it will be converted to HTML. This mode doesn’t support adding tags.
+⚡️  “list [CATEGORY] [LOCATION] [TAG [TAG…]]”: List recent Reader items, optionally filtered by CATEGORY, LOCATION, and TAGs.
 
-→ CATEGORY can be one of: article, email, epub, highlight, note, pdf, rss, tweet, video.
-→ LOCATION can be one of: new, later, shortlist, archive, feed.
+- CATEGORY can be one of: article, email, epub, highlight, note, pdf, rss, tweet, video.
+- LOCATION can be one of: new, later, shortlist, archive, feed.
+- TAG can be used up to five times. Multi-word tags must be separated+with+plusses.
 
-For example, to list all archived RSS items enter “list rss archive” into Reade.
+For example, the command “list rss archive business case+study” will list all archived RSS items tagged ‘business’ and ‘case study’.
 
 *Keyboard shortcuts* for Reader items:
 
 ✨  ↵ (return)  Open the item in Reader.
-✨  ⌘↵ (command + return)  Open the source URL in your browser.
-✨  ⌃↵ (control + return)  Open the source URL in Quick Look (or ⌘Y).
+✨  ⌘↵ (command + return)  Open the source URL in your browser (fall back to distilled HTML if no URL).
+✨  ⌥ ↵ (option + return)  Open distilled HTML in your browser.
+✨  ⌃↵ (control + return) (or ⌘Y)  Open the source URL in Quick Look (fall back to distilled HTML if no URL).
 ✨  ⇧↵ (shift + return)  Insert the source URL at the current cursor position.
 
 *Commands* manage settings:
 
-⚡️  “help”: Display a short user guide.
 ⚡️  “config” list: Show current configuration settings.
 ⚡️  “config” reset: Reset all configuration options to default.
 ⚡️  “config” set OPTION VALUE: Set the configuration OPTION to VALUE, e.g., config set default_action alert.
+⚡️  “help”: Display this user guide.
 ⚡️  “version”: Display Reade version and check if a new version is available.
 
 Reade was created by by Quinn Comendant.

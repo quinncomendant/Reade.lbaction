@@ -53,7 +53,7 @@ class Parse {
         // Intercept command keyword.
         // Collapse `two word` commands to `twoword`.
         let input_text_command = input_text.replace(/^(config) *(delete|export|list|reset|set |get ).*$/, '$1$2').toLowerCase().trim();
-        LaunchBar.debugLog(`Running command “${input_text_command}”`);
+        LaunchBar.debugLog(`Parsing command in “${input_text_command}”`);
         switch (input_text_command) {
         case 'config':
         case 'configlist':
@@ -94,14 +94,15 @@ class Parse {
     }
 
     actions(input_text) {
-        const input_text_action = input_text.toLowerCase().split(/\s+/)[0];
-        LaunchBar.debugLog(`Parsing action “${input_text_action}”`);
-        switch (input_text_action) {
+        let input_text_action;
+        [input_text_action, input_text] = util.unprefix(input_text);
+        LaunchBar.debugLog(`Parsing action in “${input_text_action}”`);
+        switch (input_text_action.toLowerCase()) {
         case 'add': {
             // Add a highlight to Readwise.
             // E.g., `add This is a highlight`,
-            this.#results.action = 'highlight_create';
-            this.#results.params.text = util.unprefix(input_text)[1];
+            this.#results.action = 'highlightCreate';
+            this.#results.params.text = input_text;
 
             // If no text entered, try to use contents of clipboard.
             if (!this.#results.params.text.trim().length) {
@@ -122,7 +123,7 @@ class Parse {
         case 'save': {
             // Save a URL to Reader.
             // E.g., `save https://example.com/post/123 tag1,tag2,tag3`
-            this.#results.action = 'document_create';
+            this.#results.action = 'documentCreate';
             // eslint-disable-next-line no-constant-condition
             while (true) {
                 const [prefix, rest] = util.unprefix(input_text);
@@ -151,7 +152,10 @@ class Parse {
                             // eslint-disable-next-line no-redeclare, no-unused-vars
                             clipboard = `<div>${markdown(clipboard)}</div>`;
                         }
-                        this.#results.params.url = `https://example.com/${util.fnv1aHash(clipboard)}`;
+                        // The URL parameter is required, even if the content doesn't have one.
+                        // .invalid is a reserved TLD meant for nonexistent hostnames and placeholder URLs.
+                        this.#results.params.url = `http://saved.by.reade/${util.fnv1aHash(clipboard)}`;
+                        this.#results.params.author = 'Saved by Reade';
                         this.#results.params.html = clipboard;
                         this.#results.params.should_clean_html = true;
                     }
@@ -168,13 +172,14 @@ class Parse {
         case 'list': {
             // Get a list of recently-saved Reader items.
             // E.g., `list unread rss`
-            this.#results.action = 'document_list';
+            this.#results.action = 'documentList';
             this.#results.params.withHtmlContent = false;
             // eslint-disable-next-line no-constant-condition
             while (true) {
                 let [prefix, rest] = util.unprefix(input_text);
                 if (!prefix) break;
                 switch (prefix) {
+                // Filter by location
                 case 'new':
                 case 'later':
                 case 'shortlist':
@@ -185,6 +190,7 @@ class Parse {
                     this.#results.params.location = prefix;
                     break;
 
+                // Filter by category
                 case 'articles':
                 case 'emails':
                 case 'epubs':
@@ -207,6 +213,14 @@ class Parse {
                 case 'video':
                     this.#results.params.category = prefix;
                     break;
+
+                default:
+                    // Filter by tag.
+                    this.#results.params.tag = this.#results.params.tag?.length ? this.#results.params.tag : [];
+                    // Tags with spaces must be entered as `tag+with+spaces`.
+                    prefix = prefix.includes('+') ? prefix.replace(/\+/g, ' ') : prefix;
+                    this.#results.params.tag.push(prefix);
+                    break;
                 }
                 input_text = rest;
             }
@@ -214,7 +228,7 @@ class Parse {
         }
 
         default:
-            LaunchBar.debugLog(`No matching action`);
+            LaunchBar.alert('Reade is Sorry 🥺', `I don’t understand what you want me to do. Run with “help” for instructions.`);
             return false;
         }
     }

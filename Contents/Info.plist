@@ -12,6 +12,8 @@
 	<string>v1.0.5</string>
 	<key>LBArgument</key>
 	<string>text</string>
+	<key>LBDebugLogEnabled</key>
+	<false/>
 	<key>LBDescription</key>
 	<dict>
 		<key>LBArgument</key>
