@@ -36,7 +36,10 @@ class Util {
     }
 
     isAccessibleURL(url) {
-        // Some documents will contain inaccessible URLs such as `mailto:…` (for documents received by email), `http://saved.by.reade/` (documents saved by Reade), or `http://example.com`.
+        // Some documents will contain inaccessible URLs such as:
+        // - `mailto:…` (for documents received by email),
+        // - `http://saved.by.reade/` or `http://example.com` (documents saved by Reade),
+        // - empty URL (PDFs, ebooks, etc).
         return typeof url === 'string'
             && /^https?:/.test(url)
             && !/^https?:\/\/([\w-]+\.)*(example(\.com)?|saved\.by\.reade|invalid|test|localhost)\//.test(url);
@@ -182,7 +185,7 @@ class Util {
     schemeSupported(scheme = 'wiseread') {
         if (Util._cachedSchemes === null) {
             Util._cachedSchemes = LaunchBar.execute(
-                '/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister',
+                '/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister',
                 '-dump',
                 'URLSchemeBinding'
             );

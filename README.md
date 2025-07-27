@@ -24,7 +24,7 @@ Highlights created with the `add` action will be saved in a Readwise book titled
 
 #### List Reader items
 
-- **`list [CATEGORY] [LOCATION] [TAG [TAG…]]`**: List recent Reader items, optionally filtered by `CATEGORY`, `LOCATION`, and `TAG`s.
+- **`list [CATEGORY] [LOCATION] [TAG [TAG…]]`**: List recent Reader items, optionally filtered by `CATEGORY`, `LOCATION`, and `TAGs`.
     - `CATEGORY` can be one of: `article`, `email`, `epub`, `highlight`, `note`, `pdf`, `rss`, `tweet`, `video`.
     - `LOCATION` can be one of: `new`, `later`, `shortlist`, `archive`, `feed`.
     - `TAG` can be used up to five times. Multi-word tags must be separated+with+plusses.

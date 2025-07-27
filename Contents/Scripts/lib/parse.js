@@ -153,7 +153,7 @@ class Parse {
                             clipboard = `<div>${markdown(clipboard)}</div>`;
                         }
                         // The URL parameter is required, even if the content doesn't have one.
-                        // .invalid is a reserved TLD meant for nonexistent hostnames and placeholder URLs.
+                        // Ideally use the .invalid TLD meant nonfunctional URLs, but domains are too prominent in the Reader UI that seeing “UNKNOWN.INVALID” is jarring.
                         this.#results.params.url = `http://saved.by.reade/${util.fnv1aHash(clipboard)}`;
                         this.#results.params.author = 'Saved by Reade';
                         this.#results.params.html = clipboard;
