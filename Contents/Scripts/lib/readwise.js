@@ -223,9 +223,11 @@ class Readwise {
             .replace(/(<(?:img|source)\b[^>]*?)\s+sizes=(?:(['"])[^>]*?\2|[^\s>]+)/ig, '$1')
             // Fix broken srcset values, e.g., https://en.m.wikipedia.org/wiki/Kumano_Kod%C5%8D
             .replace(/\s+srcset="([^"]*)"/ig, (_, u) => {
-                const a = u.replace(/%20(?=\d+(?:\.\d+)?[wx])/ig, ' ') // Decode `%201.2x` to ` 1.2x`.
-                    .replace(/(?<=\d+(?:\.\d+)?[wx],)%20/ig, ' ')      // Decode `1.2x,%20` to `1.2x, `.
-                    .split(/\s*,\s*/).filter(i => /^https?:\/\//.test(i.trim().split(/\s+/)[0])); // Remove relative URLs
+                const a = u
+                    .replace(/%20(?=\d+(?:\.\d+)?[wx])/ig, ' ')  // Decode `%201.2x` to ` 1.2x`.
+                    .replace(/(\d+(?:\.\d+)?[wx],)%20/ig, '$1 ') // Decode `1.2x,%20` to `1.2x, ` (no lookbehind; ES5-safe).
+                    .split(/\s*,\s*/)
+                    .filter(i => /^https?:\/\//.test(i.trim().split(/\s+/)[0])); // Remove relative URLs
                 return a.length ? ` srcset="${a.join(', ')}"` : '';
             });
 
