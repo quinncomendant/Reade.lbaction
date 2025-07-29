@@ -9,7 +9,7 @@
 	<key>CFBundleName</key>
 	<string>Reade</string>
 	<key>CFBundleVersion</key>
-	<string>v1.0.5</string>
+	<string>v1.1.0</string>
 	<key>LBArgument</key>
 	<string>text</string>
 	<key>LBDebugLogEnabled</key>
