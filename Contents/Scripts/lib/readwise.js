@@ -48,7 +48,7 @@ class Readwise {
                 return;
             }
             if (typeof result.data[0] === 'undefined' || result.data[0].highlights_url === 'undefined' || !result.data[0].highlights_url.length) {
-                LaunchBar.alert('Reade is Sorry 💔', 'The response was empty.');
+                LaunchBar.alert('Reade is Sorry 💔', 'Add highlight failed (the response was empty).');
                 return '';
             }
             return result.data[0].highlights_url.trim();
@@ -89,7 +89,7 @@ class Readwise {
                 return;
             }
             if (typeof result.data.url === 'undefined' || result.data.url === 'undefined' || !result.data.url.length) {
-                LaunchBar.alert('Reade is Sorry 💔', 'The response was empty.');
+                LaunchBar.alert('Reade is Sorry 💔', 'Save failed (the response was empty).');
                 return '';
             }
             return util.schemeSupported('wiseread') ? `wiseread://read/${result.data.id}` : result.data.url;
@@ -117,7 +117,7 @@ class Readwise {
                 return;
             }
             if (typeof result.data.results === 'undefined' || !result.data.results.length) {
-                LaunchBar.alert('Reade is Sorry 💔', 'The response was empty.');
+                LaunchBar.alert('Reade is Sorry 💔', 'There were no items matching your request.');
                 return '';
             }
             // Sort the results?
@@ -183,11 +183,8 @@ class Readwise {
                 return;
             }
             if (typeof result.data.results === 'undefined' || !result.data.results.length) {
-                LaunchBar.alert('Reade is Sorry 💔', 'The response was empty.');
-                return '';
-            }
-            if (!result.data.results.length) {
                 LaunchBar.alert('Reade is Sorry 💔', 'There were no items matching your request.');
+                return '';
             }
             return result.data.results[0];
         } else if (typeof result.error !== 'undefined') {
@@ -221,11 +218,13 @@ class Readwise {
         const url = util.isAccessibleURL(doc.source_url) ? doc.source_url : doc.url;
         const html_body = doc.html_content
             // Remove embedded styles.
-            .replace(/\s+style="[^"]*"/g,'')
+            .replace(/\s+style=(?:(['"])[^>]*?\1|[^\s>]+)/ig,'')
+            // Remove sizes="…" to avoid 300×150 fallback when no width/height set; ignore responsive candidate selection.
+            .replace(/(<(?:img|source)\b[^>]*?)\s+sizes=(?:(['"])[^>]*?\2|[^\s>]+)/ig, '$1')
             // Fix broken srcset values, e.g., https://en.m.wikipedia.org/wiki/Kumano_Kod%C5%8D
-            .replace(/\s*srcset="([^"]*)"/g, (_, u) => {
-                const a = u.replace(/%20(?=\d+(?:\.\d+)?[wx])/g, ' ') // Decode `%201.2x` to ` 1.2x`.
-                    .replace(/(?<=\d+(?:\.\d+)?[wx],)%20/g, ' ')      // Decode `1.2x,%20` to `1.2x, `.
+            .replace(/\s+srcset="([^"]*)"/ig, (_, u) => {
+                const a = u.replace(/%20(?=\d+(?:\.\d+)?[wx])/ig, ' ') // Decode `%201.2x` to ` 1.2x`.
+                    .replace(/(?<=\d+(?:\.\d+)?[wx],)%20/ig, ' ')      // Decode `1.2x,%20` to `1.2x, `.
                     .split(/\s*,\s*/).filter(i => /^https?:\/\//.test(i.trim().split(/\s+/)[0])); // Remove relative URLs
                 return a.length ? ` srcset="${a.join(', ')}"` : '';
             });
@@ -241,7 +240,8 @@ class Readwise {
   img,video,iframe,embed,object{max-width:100%;height:auto}
   figcaption,small,sub,sup,caption{font-size:0.8rem}
   table{border-collapse:collapse;width:100%}
-  th,td{border:1px solid #ddd;padding:8px;text-align: left;vertical-align:top}
+  th:not([id="bodyCell"]),td:not([id="bodyCell"]){border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
+  table table,table table th,table table td{all:unset !important}
   th{background-color:#f2f2f2}
   .byline {margin-bottom:1.8em}
 </style></head><body>
