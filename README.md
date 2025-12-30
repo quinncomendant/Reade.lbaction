@@ -116,4 +116,4 @@ Do you find this free software useful? [Say thanks with a coffee!](https://ko-fi
 
 ----
 
-[![Reade icon](docs/Reade-full.png)](docs/Reade-full.png)
+<a href="docs/Reade-full.png"><img src="docs/Reade-full.png" alt="Reade icon" width="233" height="233"></a>

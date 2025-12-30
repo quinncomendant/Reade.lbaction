@@ -44,7 +44,13 @@ class Readwise {
         if (typeof result.data !== 'undefined') {
             LaunchBar.debugLog(`Response (${result.response.status}) https://readwise.io/api/v2/highlights/: ${JSON.stringify(result.data)}`);
             if (result.response.status !== 200) {
-                LaunchBar.alert('The request failed', result.data[0]?.text[0]);
+                if (typeof result.data.detail !== 'undefined' && result.data.detail.length) {
+                    LaunchBar.alert('The request failed', result.data.detail);
+                } else if (typeof result.data[0] !== 'undefined' && typeof result.data[0].text !== 'undefined' && result.data[0].text[0].length) {
+                    LaunchBar.alert('The request failed', result.data[0].text[0]);
+                } else {
+                    LaunchBar.alert('The request failed', JSON.stringify(result.data));
+                }
                 return;
             }
             if (typeof result.data[0] === 'undefined' || result.data[0].highlights_url === 'undefined' || !result.data[0].highlights_url.length) {
@@ -81,10 +87,8 @@ class Readwise {
                     LaunchBar.alert('The request failed', result.data.detail);
                 } else if (typeof result.data[0] !== 'undefined' && typeof result.data[0].text !== 'undefined' && result.data[0].text[0].length) {
                     LaunchBar.alert('The request failed', result.data[0].text[0]);
-                } else if (Object.keys(result.data).length && result.data[Object.keys(result.data)[0]]?.[0]) {
-                    LaunchBar.alert('The request failed', result.data[Object.keys(result.data)[0]][0]);
                 } else {
-                    LaunchBar.alert('Reade is Sorry 💔', 'The request failed and the API response didn’t include an error message.');
+                    LaunchBar.alert('The request failed', JSON.stringify(result.data));
                 }
                 return;
             }
@@ -113,7 +117,13 @@ class Readwise {
         if (typeof result.data !== 'undefined') {
             LaunchBar.debugLog(`Response (${result.response.status}) https://readwise.io/api/v3/list/: ${JSON.stringify(result.data)}`);
             if (result.response.status !== 200) {
-                LaunchBar.alert('The request failed', result.data[0]?.text[0]);
+                if (typeof result.data.detail !== 'undefined' && result.data.detail.length) {
+                    LaunchBar.alert('The request failed', result.data.detail);
+                } else if (typeof result.data[0] !== 'undefined' && typeof result.data[0].text !== 'undefined' && result.data[0].text[0].length) {
+                    LaunchBar.alert('The request failed', result.data[0].text[0]);
+                } else {
+                    LaunchBar.alert('The request failed', JSON.stringify(result.data));
+                }
                 return;
             }
             if (typeof result.data.results === 'undefined' || !result.data.results.length) {
@@ -179,7 +189,13 @@ class Readwise {
         if (typeof result.data !== 'undefined') {
             LaunchBar.debugLog(`Response (${result.response.status}) https://readwise.io/api/v3/list/: ${JSON.stringify(result.data)}`);
             if (result.response.status !== 200) {
-                LaunchBar.alert('The request failed', result.data[0]?.text[0]);
+                if (typeof result.data.detail !== 'undefined' && result.data.detail.length) {
+                    LaunchBar.alert('The request failed', result.data.detail);
+                } else if (typeof result.data[0] !== 'undefined' && typeof result.data[0].text !== 'undefined' && result.data[0].text[0].length) {
+                    LaunchBar.alert('The request failed', result.data[0].text[0]);
+                } else {
+                    LaunchBar.alert('The request failed', JSON.stringify(result.data));
+                }
                 return;
             }
             if (typeof result.data.results === 'undefined' || !result.data.results.length) {
@@ -199,14 +215,24 @@ class Readwise {
     documentQuickLookHtmlFile(document_id) {
         const doc = this.documentGet(document_id);
         const file = util.filenameFromInputString(doc.title, 'html');
-        util.saveFile(file, this.buildHTML(doc));
+        const html = this.buildHTML(doc);
+        if (!html) {
+            LaunchBar.alert('Reade is Sorry 💔', 'That document is empty. Try opening it in Reader.');
+            return;
+        }
+        util.saveFile(file, html);
         LaunchBar.openQuickLook(`file://${file}`);
     }
 
     documentOpenHtmlFile(document_id) {
         const doc = this.documentGet(document_id);
         const file = util.filenameFromInputString(doc.title, 'html');
-        util.saveFile(file, this.buildHTML(doc));
+        const html = this.buildHTML(doc);
+        if (!html) {
+            LaunchBar.alert('Reade is Sorry 💔', 'That document is empty. Try opening it in Reader.');
+            return;
+        }
+        util.saveFile(file, html);
         util.openFile(file);
     }
 
