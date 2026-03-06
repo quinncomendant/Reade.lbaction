@@ -22,6 +22,10 @@ Highlights created with the `add` action will be saved in a Readwise book titled
 - **`save URL [TAGS]`**: Save a *URL* to Reader. Any words after the `URL` (comma-delimited) will be added as tags, e.g., `tag one, tag two`.
 - **`save`**: Save to Reader using a *URL or text from the clipboard*. The clipboard can contain raw HTML, text, or Markdown. If the clipboard contains Markdown, it will be converted to HTML. This mode doesn’t support adding tags.
 
+#### Open document in Reader
+
+- **`open URL|DOCUMENT_ID`**: Open a *`https://read.readwise.io` URL* or *document ID* in the Reader desktop app (if installed).
+
 #### List Reader items
 
 - **`list [CATEGORY] [LOCATION] [TAG [TAG…]]`**: List recent Reader items, optionally filtered by `CATEGORY`, `LOCATION`, and `TAGs`.

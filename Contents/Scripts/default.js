@@ -112,6 +112,8 @@ function runWithString(argument) {
         return util.actionOutput(provider.documentCreate());
     case 'documentList':
         return provider.documentList();
+    case 'documentOpenURL':
+        LaunchBar.openURL(parse.get('params').url);
     }
 }
 

@@ -227,6 +227,29 @@ class Parse {
             return true;
         }
 
+        case 'open': {
+            // Open a document in Reader (desktop app if installed, otherwise web).
+            // E.g., `open https://read.readwise.io/new/read/01kk25kt68wn7f239tg1jppc83`
+            // or `open 01kk25kt68wn7f239tg1jppc83`
+            const input = input_text.trim();
+            const url_match = input.match(/^https?:\/\/read\.readwise\.io\/new\/read\/([a-zA-Z0-9]+)/);
+            let id;
+            if (url_match) {
+                id = url_match[1];
+            } else if (/^[a-zA-Z0-9]+$/.test(input)) {
+                id = input;
+            }
+
+            if (!id) {
+                LaunchBar.alert(`Failed to open`, `The “open” action requires a Reader URL or document ID, e.g., “open https://read.readwise.io/new/read/01kk25kt68wn7f239tg1jppc83” or “open 01kk25kt68wn7f239tg1jppc83”.`);
+                return false;
+            }
+
+            this.#results.action = 'documentOpenURL';
+            this.#results.params.url = util.schemeSupported('wiseread') ? `wiseread://read/${id}` : `https://read.readwise.io/new/read/${id}`;
+            return true;
+        }
+
         default:
             LaunchBar.alert('Reade is Sorry 🥺', `I don’t understand what you want me to do. Run with “help” for instructions.`);
             return false;

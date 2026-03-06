@@ -25,6 +25,7 @@ class Help {
 ⚡️  “add”: Create a new highlight in Readwise with text from the clipboard and return its URL
 ⚡️  “save URL [TAGS]”: Save a URL to Reader. Any words after the URL (comma-delimited) will be added as tags, e.g., “tag one, tag two”.
 ⚡️  “save”: Save to Reader using a URL or text from the clipboard. The clipboard can contain raw HTML, text, or Markdown. If the clipboard contains Markdown, it will be converted to HTML. This mode doesn’t support adding tags.
+⚡️  “open URL|DOCUMENT_ID”: Open a read.readwise.io URL or document ID in the Reader desktop app (if installed).
 ⚡️  “list [CATEGORY] [LOCATION] [TAG [TAG…]]”: List recent Reader items, optionally filtered by CATEGORY, LOCATION, and TAGs.
 
 - CATEGORY can be one of: article, email, epub, highlight, note, pdf, rss, tweet, video.
