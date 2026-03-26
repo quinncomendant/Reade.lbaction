@@ -232,7 +232,7 @@ class Parse {
             // E.g., `open https://read.readwise.io/new/read/01kk25kt68wn7f239tg1jppc83`
             // or `open 01kk25kt68wn7f239tg1jppc83`
             const input = input_text.trim();
-            const url_match = input.match(/^https?:\/\/read\.readwise\.io\/new\/read\/([a-zA-Z0-9]+)/);
+            const url_match = input.match(/^https?:\/\/read\.readwise\.io\/.*\/read\/([a-zA-Z0-9]{20,})/);
             let id;
             if (url_match) {
                 id = url_match[1];
